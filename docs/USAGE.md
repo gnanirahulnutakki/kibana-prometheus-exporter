@@ -54,7 +54,7 @@ spec:
         - containerPort: 5601
 
     - name: exporter
-      image: ghcr.io/gnanirahulnutakki/kibana-prometheus-exporter:latest
+      image: rahulnutakki/kibana-prometheus-exporter:latest
       args:
         - --kibana-url=http://localhost:5601
         - --log-level=info
@@ -83,7 +83,7 @@ services:
       ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
 
   kibana-exporter:
-    image: ghcr.io/gnanirahulnutakki/kibana-prometheus-exporter:latest
+    image: rahulnutakki/kibana-prometheus-exporter:latest
     ports:
       - "9684:9684"
     environment:
@@ -116,7 +116,7 @@ spec:
     spec:
       containers:
         - name: exporter
-          image: ghcr.io/gnanirahulnutakki/kibana-prometheus-exporter:latest
+          image: rahulnutakki/kibana-prometheus-exporter:latest
           env:
             - name: KIBANA_URL
               value: "http://kibana:5601"
@@ -153,7 +153,7 @@ spec:
     spec:
       containers:
         - name: exporter
-          image: ghcr.io/gnanirahulnutakki/kibana-prometheus-exporter:latest
+          image: rahulnutakki/kibana-prometheus-exporter:latest
           env:
             - name: KIBANA_URL
               value: "https://kibana:5601"
@@ -182,7 +182,7 @@ kibana:
   enabled: true
   extraContainers:
     - name: metrics-exporter
-      image: ghcr.io/gnanirahulnutakki/kibana-prometheus-exporter:latest
+      image: rahulnutakki/kibana-prometheus-exporter:latest
       args:
         - --kibana-url=http://localhost:5601
         - --log-level=info

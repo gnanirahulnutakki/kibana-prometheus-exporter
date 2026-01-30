@@ -27,7 +27,7 @@ spec:
         fsGroup: 65534
       containers:
         - name: exporter
-          image: ghcr.io/gnanirahulnutakki/kibana-prometheus-exporter:latest
+          image: rahulnutakki/kibana-prometheus-exporter:latest
           imagePullPolicy: IfNotPresent
           args:
             - --kibana-url=$(KIBANA_URL)

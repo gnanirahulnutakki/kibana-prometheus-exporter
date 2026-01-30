@@ -55,7 +55,7 @@ A lightweight, secure Prometheus exporter for Kibana metrics, written in Go.
 docker run -d \
   -p 9684:9684 \
   -e KIBANA_URL=http://kibana:5601 \
-  ghcr.io/gnanirahulnutakki/kibana-prometheus-exporter:latest
+  rahulnutakki/kibana-prometheus-exporter:latest
 ```
 
 ### Kubernetes
@@ -113,7 +113,7 @@ kubectl apply -f deploy/kubernetes/servicemonitor.yaml
 govulncheck ./...
 
 # Scan container image
-trivy image ghcr.io/gnanirahulnutakki/kibana-prometheus-exporter:latest
+trivy image rahulnutakki/kibana-prometheus-exporter:latest
 ```
 
 ## Building
