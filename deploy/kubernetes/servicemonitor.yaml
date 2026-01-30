@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kibana-prometheus-exporter
+  labels:
+    app.kubernetes.io/name: kibana-prometheus-exporter
+    app.kubernetes.io/component: exporter
+    # Add this label to match your Prometheus selector
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kibana-prometheus-exporter
+  endpoints:
+    - port: metrics
+      interval: 30s
+      scrapeTimeout: 10s
+      path: /metrics
+  namespaceSelector:
+    matchNames:
+      - default  # Change to your namespace

@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana-prometheus-exporter
+  labels:
+    app.kubernetes.io/name: kibana-prometheus-exporter
+    app.kubernetes.io/component: exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kibana-prometheus-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kibana-prometheus-exporter
+        app.kubernetes.io/component: exporter
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9684"
+        prometheus.io/path: "/metrics"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+      containers:
+        - name: exporter
+          image: ghcr.io/gnanirahulnutakki/kibana-prometheus-exporter:latest
+          imagePullPolicy: IfNotPresent
+          args:
+            - --kibana-url=$(KIBANA_URL)
+            - --log-level=info
+          env:
+            - name: KIBANA_URL
+              value: "http://kibana:5601"
+            # Optional: Set these if Kibana requires authentication
+            # - name: KIBANA_USERNAME
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: kibana-exporter-secrets
+            #       key: username
+            # - name: KIBANA_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: kibana-exporter-secrets
+            #       key: password
+          ports:
+            - name: metrics
+              containerPort: 9684
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: metrics
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: metrics
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana-prometheus-exporter
+  labels:
+    app.kubernetes.io/name: kibana-prometheus-exporter
+    app.kubernetes.io/component: exporter
+spec:
+  type: ClusterIP
+  ports:
+    - name: metrics
+      port: 9684
+      targetPort: metrics
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: kibana-prometheus-exporter
